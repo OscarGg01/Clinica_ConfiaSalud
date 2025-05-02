@@ -320,9 +320,9 @@ body {
   
   /* Estado hover: cambia a tu color favorito */
 .btn-success:hover {
-    background-color: #369fc2;   /* reemplaza por el color deseado */
+    background-color: #369fc2;   
     border-color: #000000;
-    color: #fff;                 /* o el que contraste mejor */
+    color: #fff;             
   }
 
 
@@ -337,3 +337,8 @@ body {
     color: #f5bfbd; /* tu color favorito */
 }
 
+.btn-primary:hover{
+    background-color: #369fc2;   
+    border-color: #000000;
+    color: #fff; 
+}
