@@ -1,0 +1,177 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Area;
+use App\Models\Cita;
+use App\Models\Paciente;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CitaAgendada;
+
+class AppointmentController extends Controller
+{
+    /**
+     * Busca paciente por DNI en tu BD local.
+     */
+    public function buscarPaciente(Request $request)
+    {
+        $request->validate([
+            'dni' => 'required|digits:8'
+        ]);
+
+        $pac = Paciente::where('dni', $request->dni)->first();
+
+        return $pac
+            ? response()->json($pac)
+            : response()->json(null, 404);
+    }
+
+    /**
+     * Muestra el formulario para crear una nueva cita.
+     */
+    public function create()
+    {
+        $areas = Area::with('especialistas')->get();
+        return view('citas.create', compact('areas'));
+    }
+
+    /**
+     * Almacena una nueva cita y envía correo de confirmación.
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'dni'             => 'required|string|exists:pacientes,dni',
+            'area_id'         => 'required|exists:areas,id',
+            'especialista_id' => 'required|exists:especialistas,id',
+            'fecha'           => 'required|date',
+            'hora'            => 'required',
+        ]);
+
+        $cita = Cita::create($data);
+        $paciente = Paciente::where('dni', $data['dni'])->first();
+
+        Mail::to($paciente->email)
+            ->send(new CitaAgendada($paciente, $cita));
+
+        return redirect()
+            ->route('citas.create')
+            ->with('success', '¡La cita fue agendada correctamente! Te hemos enviado un correo de confirmación.');
+    }
+
+    /**
+     * Muestra el formulario de acceso al historial (DNI + celular).
+     */
+    public function historialForm()
+    {
+        return view('citas.historial');
+    }
+
+    /**
+     * Verifica DNI+celular y muestra las citas del paciente.
+     */
+    public function historialVerificar(Request $request)
+    {
+        $request->validate([
+            'dni'     => 'required|digits:8',
+            'celular' => 'required'
+        ]);
+
+        $dni     = $request->dni;
+        $celular = $request->celular;
+
+        // Verificamos combinación DNI + teléfono
+        $pac = Paciente::where('dni', $dni)
+                       ->where('telefono', $celular)
+                       ->first();
+
+        if (! $pac) {
+            return redirect()
+                ->back()
+                ->with('error', 'DNI o celular incorrectos.');
+        }
+
+        // Guardamos en sesión para autorizar edición
+        session(['paciente_dni' => $dni]);
+
+        // Obtenemos citas futuras del paciente
+        $citas = Cita::where('dni', $dni)
+                     ->whereDate('fecha', '>=', now())
+                     ->with(['area','especialista'])
+                     ->get();
+
+        return view('citas.historial_list', compact('citas'));
+    }
+
+    /**
+     * Muestra el formulario para reprogramar una cita.
+     * Sólo si coincide el DNI en sesión.
+     */
+    public function edit(Cita $cita)
+    {
+        if (session('paciente_dni') !== $cita->dni) {
+            abort(403, 'No autorizado.');
+        }
+
+        $areas = Area::with('especialistas')->get();
+        return view('citas.edit', compact('cita','areas'));
+    }
+
+    /**
+     * Actualiza la cita (reprogramación).
+     */
+    public function update(Request $request, Cita $cita)
+    {
+        if (session('paciente_dni') !== $cita->dni) {
+            abort(403, 'No autorizado.');
+        }
+
+        $data = $request->validate([
+            'area_id'         => 'required|exists:areas,id',
+            'especialista_id' => 'required|exists:especialistas,id',
+            'fecha'           => 'required|date|after_or_equal:today',
+            'hora'            => 'required',
+        ]);
+
+        $cita->update($data);
+
+        return redirect()
+            ->route('citas.historial.form')
+            ->with('success', 'Cita reprogramada correctamente.');
+    }
+
+    /**
+     * Almacena o actualiza solo los datos del paciente.
+     */
+    public function storePaciente(Request $request)
+    {
+        // Validación idéntica a la de store() para datos de paciente
+        $data = $request->validate([
+            'dni'              => 'required|digits:8',
+            'apellido_paterno' => 'required|string',
+            'apellido_materno' => 'required|string',
+            'nombres'          => 'required|string',
+            'fecha_nac'        => 'required|date',
+            'sexo'             => 'required|in:Masculino,Femenino,Otro',
+            'email'            => 'nullable|email',
+            'telefono'         => 'nullable|string',
+            'whatsapp'         => 'nullable|string',
+            'ubicacion'        => 'nullable|string',
+        ]);
+
+        // Crear o actualizar paciente
+        $paciente = Paciente::updateOrCreate(
+            ['dni' => $data['dni']],
+            $data
+        );
+
+        // Responder con JSON para confirmar al front
+        return response()->json([
+            'success'  => true,
+            'message'  => 'Paciente registrado/actualizado correctamente.',
+            'paciente' => $paciente,
+        ]);
+    }
+
+}

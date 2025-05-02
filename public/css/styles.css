@@ -1,0 +1,339 @@
+.superior-bar{
+    background-color:#f5bfbd;
+    padding:5px;
+}
+
+.navbar{background-color: #517682;
+padding:10px;}
+
+.logo {
+    height: 100%px;
+}
+
+.nombre-empresa {
+    font-size: 35px;
+    font-weight: bold;
+    margin-left: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-item{text-align: center;
+font-family: 'Open Sans', sans-serif;
+font-size: 20px;
+padding:3px 5px 3px 5px;
+font-weight: bold;}
+
+.salud{color:rgb(202, 210, 215)}
+
+.container01{height: 100%;
+    display: flex;
+    padding: 50px;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 23px;
+}
+
+.img-fluid{
+    max-width: 100%;
+    height: auto;
+    max-height: 300px;
+    min-height: 400px;
+    border-radius: 25px;
+}
+
+.titulo{
+    font-size: 50px;
+    font-weight: bold;
+    margin-left: 20px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.imagen-descripcion {
+    background-color: #f7faf3;
+    padding: 2rem 0;
+}
+  
+.align-items-stretch {align-items: stretch !important;}
+  
+.object-fit-cover {object-fit: cover;}
+
+.relleno {
+    background-color: #b5a2a8;
+    padding: 50px;
+}
+
+.relleno_historial{
+    background-color: #f7faf3;
+}
+
+.relleno_lista{
+    background-color: #f7faf3;
+}
+
+.final{background-color: #171c2a;
+    color:white;
+    padding: 100px;
+}
+
+.relleno-citas {
+    padding-top: 0 !important;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow-y: auto; /* Permite scroll */
+}
+
+/* Fondo fijo con efecto blur */
+.relleno-citas::before {
+    content: "";
+    position: fixed; /* Fondo estático */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/images/fondo-citas.jpg') center/cover no-repeat;
+    filter: blur(8px);
+    transform: scale(1.05);
+    z-index: 0;
+}
+
+.relleno-citas .agendar {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+}
+
+/* Mejora de legibilidad */
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(2px);
+}
+
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.titulo-citas {
+    font-size: 50px;
+    color: black;
+    font-weight: bold;
+    margin-left: 20px;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+}
+
+.relleno-especialidades {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+/* Fondo desenfocado */
+.relleno-especialidades::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('/images/especialidades.avif') center/cover no-repeat;
+    transform: scale(1.1);
+    z-index: 0;
+}
+
+/* Contenido encima del fondo */
+.relleno-especialidades .contenido {
+    position: relative;
+    z-index: 1;
+    padding: 1rem;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+.btn{
+    background-color: #517682;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+
+/* Agrega estos estilos */
+.superior-bar,
+.second-bar,
+.final {
+    position: relative;
+    z-index: 1000; /* Mayor que el z-index del fondo */
+}
+
+.relleno-citas {
+    margin-top: 120px; /* Ajusta según altura de tu header */
+    margin-bottom: 100px; /* Espacio para el footer */
+}
+
+.relleno-citas::before {
+    /* Mantener el código anterior y agregar: */
+    z-index: -1; /* Fondo detrás de todo */
+}
+
+.final {
+    background: rgba(0, 0, 0, 0.9); /* Fondo semi-transparente */
+    position: relative;
+}
+
+
+/* En tu CSS */
+.card.bg-white {
+    background: #b5a2a8 !important; /* Color actual */
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Para cambiar el color, modifica el valor del background */
+.card.bg-custom {
+    background: #ffffff !important; /* Ejemplo gris claro */
+}
+
+/* CSS actualizado */
+.relleno-citas {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.agendar {
+    flex: 1;
+}
+
+.final {
+    margin-top: auto; /* Fuerza al footer a pegarse abajo */
+    width: 100%;
+}
+
+.form-label[required]::after {
+    content: "*";
+    color: #dc3545;
+    margin-left: 3px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.relleno-citas {
+    flex: 1;
+}
+
+.titulo-container {
+    margin-top: 0;
+}
+
+.titulo-citas {
+    font-size: 70px;
+    color: #517682;
+    font-weight: 900; /* Negro */
+    font-family: 'Montserrat', sans-serif; /* Alternativa */
+    text-align: center;
+    margin-bottom: 8px; /* Espacio para el subtítulo */
+    padding-top: 15px; /* Compensa el margin-top negativo */
+    border-radius: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra suave */
+    /* O para un efecto "borde" */
+    text-shadow: 
+    -1px -1px 0 #f5bfbd,  
+    1px -1px 0 #f5bfbd,
+    -1px 1px 0 #f5bfbd,
+    1px 1px 0 #f5bfbd;
+}
+
+.subtitulo-citas {
+    font-size: 19px;
+    color: rgba(0, 0, 0, 0.6); /* 60% de opacidad */
+    text-align: center;
+    letter-spacing: 0.5px;
+    margin-top: -5px; /* Pegar al título */
+    font-family: 'Montserrat', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .titulo-citas {
+        font-size: 36px;
+        margin-bottom: 5px;
+    }
+    
+    .subtitulo-citas {
+        font-size: 12px;
+    }
+}
+
+.mapa{
+    border-color: #f5bfbd;
+    border-radius: 10px;
+}
+
+.mapa-weas{
+    font-weight: bold;
+}
+
+.avenida{
+    color: white;
+}
+
+.titulos-footer{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Aplica la transición suave */
+.navbar .nav-link {
+    transition: color 0.3s ease;
+  }
+  
+  /* Color normal */
+  .navbar .nav-link {
+    color: #000; /* o el color que quieras por defecto */
+  }
+  
+  /* Color al pasar el mouse */
+  .navbar .nav-link:hover {
+    color: #f5bfbd; /* reemplaza por tu color favorito */
+  }
+
+  
+/* Transición suave para todos los botones */
+.btn {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Estado normal del botón Agendar (usa la clase .btn-success como ejemplo) */
+.btn-success {
+    background-color: #517682;   /* verde original */
+    border-color: #000000;
+    color: #fff;
+  }
+  
+  /* Estado hover: cambia a tu color favorito */
+.btn-success:hover {
+    background-color: #369fc2;   /* reemplaza por el color deseado */
+    border-color: #000000;
+    color: #fff;                 /* o el que contraste mejor */
+  }
+
+
+/* Mostrar dropdown al pasar el mouse */
+.navbar .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* elimina el pequeño gap si lo hubiese */
+}
+  
+/* Opcional: que el toggle también cambie de color on hover */
+.navbar .dropdown:hover > .dropdown-toggle {
+    color: #f5bfbd; /* tu color favorito */
+}
+
