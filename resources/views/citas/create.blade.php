@@ -112,7 +112,7 @@
                 >
               </div>
               <div class="col-auto">
-                <button type="button" id="btn-buscar" class="btn btn-info">
+                <button type="button" id="btn-buscar" class="btn btn-primary">
                   <i class="bi bi-search"></i> Buscar
                 </button>
               </div>
