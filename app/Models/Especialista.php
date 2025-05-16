@@ -12,4 +12,10 @@ class Especialista extends Model
     {
         return $this->belongsTo(Area::class);
     }
+
+    public function horarios()
+{
+    return $this->hasMany(EspecialistaHorario::class);
+}
+
 }

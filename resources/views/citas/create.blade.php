@@ -294,38 +294,43 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   {{-- Aquí va tu lógica de citas: btn-buscar, area change, fecha change y form submit --}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    // public/js/citas.js
-
-    // 0) Configura CSRF para Axios (si no está globalmente en tu layout)
+    // 0) Configuración global CSRF para Axios
     axios.defaults.headers.common['X-CSRF-TOKEN'] =
       document.querySelector('meta[name="csrf-token"]').content;
-
+  
     // 1) Buscar paciente por DNI
     document.getElementById('btn-buscar').addEventListener('click', () => {
       const dni = document.getElementById('dni').value.trim();
-      if (!dni) return alert('¡Ingrese un número de documento!');
+      if (!dni) {
+        alert('¡Ingrese un número de documento!');
+        return;
+      }
       axios.post('/citas/buscar-paciente', { dni })
         .then(({ data }) => {
           if (data) {
             ['apellido_paterno','apellido_materno','nombres','fecha_nac','sexo',
-            'email','telefono','whatsapp','ubicacion']
+             'email','telefono','whatsapp','ubicacion']
               .forEach(f => document.getElementById(f).value = data[f] || '');
           } else {
             alert('Paciente no encontrado. Complete los datos manualmente.');
           }
         })
-        .catch(() => alert('Error al buscar paciente. Complete los datos manualmente.'));
+        .catch(() => {
+          alert('Error al buscar paciente. Complete los datos manualmente.');
+        });
     });
-
-    // 2) Cargar especialistas
+  
+    // 2) Cargar especialistas al cambiar área
     document.getElementById('area_id').addEventListener('change', function() {
       const select = document.getElementById('especialista_id');
-      if (!this.value) {
-        select.innerHTML = '<option value="">Primero seleccione área</option>';
-        return;
-      }
-      select.innerHTML = '<option>Cargando...</option>';
+      select.innerHTML = this.value
+        ? '<option>Cargando...</option>'
+        : '<option value="">Primero seleccione área</option>';
+      if (!this.value) return;
+  
       axios.post('/citas/especialistas', { area_id: this.value })
         .then(({ data }) => {
           select.innerHTML = '<option value="">Seleccione...</option>';
@@ -340,64 +345,52 @@
           select.innerHTML = '<option value="">Seleccione...</option>';
         });
     });
-
-    // 3) Generar horas fijas
-    function generarSlots() {
+  
+    // 3) Cargar horarios desde BD al cambiar especialista
+    document.getElementById('especialista_id').addEventListener('change', () => {
       const selectHora = document.getElementById('hora');
       const esp = document.getElementById('especialista_id').value;
-      const fecha = document.getElementById('fecha').value;
-      if (!esp || !fecha) {
-        selectHora.innerHTML = '<option value="">Elige fecha y especialista</option>';
-        return;
-      }
-      const slots = [];
-      [[8,14],[16,20]].forEach(([start,end]) => {
-        for (let h = start; h < end; h++) {
-          slots.push(`${String(h).padStart(2,'0')}:00`);
-          slots.push(`${String(h).padStart(2,'0')}:30`);
-        }
-      });
-      const opciones = slots
-        .filter(s => {
-          const [hh,mm] = s.split(':').map(Number);
-          return (hh < 14 || hh >= 16) && !(hh === 20 && mm > 0);
+      selectHora.innerHTML = esp
+        ? '<option>Cargando...</option>'
+        : '<option value="">Selecciona especialista primero</option>';
+      if (!esp) return;
+  
+      axios.post('/citas/horarios', { especialista_id: esp })
+        .then(({ data }) => {
+          selectHora.innerHTML = data.length
+            ? data.map(h => `<option value="${h}">${h}</option>`).join('')
+            : '<option value="">No hay horarios disponibles</option>';
         })
-        .map(s => `<option value="${s}">${s}</option>`)
-        .join('');
-      selectHora.innerHTML = opciones;
-    }
-
-    document.getElementById('especialista_id').addEventListener('change', generarSlots);
-    document.getElementById('fecha').addEventListener('change', generarSlots);
-
-    // 4) Validar y enviar
+        .catch(() => {
+          alert('Error al cargar horarios');
+          selectHora.innerHTML = '<option value="">Error al cargar</option>';
+        });
+    });
+  
+    // 4) Validación y envío de la cita
     document.getElementById('form-cita').addEventListener('submit', function(e) {
       document.getElementById('h-dni').value =
         document.getElementById('dni').value.trim();
-
-      const reqs = Array.from(document.querySelectorAll('[required]'));
-      if (!reqs.every(i => i.value.trim() !== '')) {
+  
+      const requireds = Array.from(this.querySelectorAll('[required]'));
+      if (!requireds.every(i => i.value.trim() !== '')) {
         e.preventDefault();
         alert('¡Complete todos los campos obligatorios!');
-        (document.querySelector('[required]:invalid') || reqs.find(i=>i.value===''))
+        (this.querySelector('[required]:invalid') || requireds.find(i => i.value===''))
           .scrollIntoView({ behavior:'smooth' });
       }
     });
-
-    // Botón Registrar Usuario
+  
+    // 5) Registrar paciente (solo datos personales)
     document.getElementById('btn-registrar-paciente').addEventListener('click', async () => {
       const form = document.getElementById('form-paciente');
       const formData = new FormData(form);
-
+  
       try {
         const res = await axios.post('{{ route("pacientes.store") }}', formData);
-        if (res.data.success) {
-          alert(res.data.message);
-        }
+        alert(res.data.message);
       } catch (err) {
-        console.error(err);
-        if (err.response && err.response.data.errors) {
-          // Mostrar el primer error de validación
+        if (err.response?.data?.errors) {
           const msgs = Object.values(err.response.data.errors).flat();
           alert('Error: ' + msgs[0]);
         } else {
@@ -405,7 +398,7 @@
         }
       }
     });
-
   </script>
+  
 </body>
 </html>

@@ -31,8 +31,7 @@
         <div class="container">
           {{-- 1. Logo + Nombre de la empresa --}}
           <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-            <img class="logo" src="{{ asset('/images/imagen1.png') }}" alt="Logo Empresa" height="80" class="me-2">
-            <span class="nombre-empresa">Clinica Confía<span class="salud">Salud</span></span>
+            <img class="logo" src="{{ asset('/images/logo-confia-salud.png') }}" alt="Logo Empresa" height="80" class="me-2">
           </a>
       
           {{-- 2. Botón toggler para móvil --}}

@@ -5,6 +5,11 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CitaController;
 use App\Models\Especialista;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\BasicAdmin;
+use App\Http\Controllers\EspecialistaController;
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\HorarioController;
 
 
 Route::get('/', function () {
@@ -51,3 +56,26 @@ Route::view('/staff', 'staff')->name('staff');
 Route::post('/citas/buscar-paciente', [AppointmentController::class, 'buscarPaciente'])->name('citas.buscarPaciente');
 
 Route::post('/pacientes/store', [AppointmentController::class, 'storePaciente'])->name('pacientes.store');
+
+Route::post('/citas/horarios', [AppointmentController::class, 'getHorarios'])->name('citas.horarios');
+
+Route::prefix('admin')
+     ->middleware(BasicAdmin::class)
+     ->group(function() {
+
+    // Dashboard
+    Route::get('/', [AdminController::class, 'dashboard'])
+         ->name('admin.dashboard');
+
+    // CRUD de Especialistas
+    Route::resource('especialistas', EspecialistaController::class)
+         ->except('show');
+
+    // CRUD de Áreas
+    Route::resource('areas', AreaController::class)
+         ->except('show');
+
+    // CRUD de Horarios
+    Route::resource('horarios', HorarioController::class)
+         ->except('show');
+});

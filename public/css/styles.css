@@ -1,10 +1,18 @@
 .superior-bar{
-    background-color:#f5bfbd;
+    background-color:#fde6c4;
     padding:5px;
 }
 
 .navbar{background-color: #517682;
 padding:10px;}
+
+.nav-item{
+    color: #ffffff;
+}
+
+.navbar-nav .dropdown-menu .dropdown-item {
+    color: #024744; 
+  }
 
 .logo {
     height: 100%px;
@@ -23,7 +31,7 @@ font-size: 20px;
 padding:3px 5px 3px 5px;
 font-weight: bold;}
 
-.salud{color:rgb(202, 210, 215)}
+.salud{color:#fde6c4}
 
 .container01{height: 100%;
     display: flex;
@@ -302,7 +310,7 @@ body {
   
   /* Color al pasar el mouse */
   .navbar .nav-link:hover {
-    color: #f5bfbd; /* reemplaza por tu color favorito */
+    color: #fde6c4;
   }
 
   

@@ -174,4 +174,21 @@ class AppointmentController extends Controller
         ]);
     }
 
+    /**
+     * Devuelve los horarios de un especialista según lo registrado en BD.
+     */
+    public function getHorarios(Request $request)
+    {
+        $request->validate([
+            'especialista_id' => 'required|exists:especialistas,id',
+        ]);
+
+        $esp = \App\Models\Especialista::with('horarios')
+                ->find($request->especialista_id);
+
+        // Retornamos solo el array de horas en formato "HH:MM"
+        $horas = $esp->horarios->pluck('hora');
+
+        return response()->json($horas);
+    }
 }
