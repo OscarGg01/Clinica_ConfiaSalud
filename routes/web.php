@@ -10,6 +10,7 @@ use App\Http\Middleware\BasicAdmin;
 use App\Http\Controllers\EspecialistaController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\ContactoController;
 
 
 Route::get('/', function () {
@@ -78,4 +79,9 @@ Route::prefix('admin')
     // CRUD de Horarios
     Route::resource('horarios', HorarioController::class)
          ->except('show');
+
+Route::post('/contacto/enviar', [ContactoController::class, 'enviar'])->name('contacto.enviar');
+    
+    // Ruta para la política de privacidad
+Route::view('/politica-privacidad', 'politica_privacidad')->name('politica.privacidad');
 });
