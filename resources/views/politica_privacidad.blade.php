@@ -91,7 +91,7 @@
     <p>En Clínica ConfíaSalud respetamos tu privacidad y nos comprometemos a proteger tus datos personales. A continuación te explicamos cómo los recopilamos, utilizamos y resguardamos:</p>
 
     <h3>1. Responsable del Tratamiento</h3>
-    <p>Clínica ConfíaSalud, Av. Ejemplo 123, Huancayo, Perú.</p>
+    <p>Clínica ConfíaSalud, Ubicación: Av. Huancavelica 745, El Tambo, Huancayo, Peru</p>
 
     <h3>2. Datos que recopilamos</h3>
     <ul>

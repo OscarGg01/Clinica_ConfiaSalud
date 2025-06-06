@@ -98,14 +98,14 @@
     </div>
 
     <div class="relleno" style="background-color: #b5a2a8; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;">
-        <div class="container">
-            <h2 class="text-center mb-4" style="color: #024744; font-weight: 700;">
-                ¿Quiénes somos?
-            </h2>
-            <p class="text-center" style="color: #024744; font-size: 1.05rem;">
+
+      <div class="container">
+        <h2 class="text-center mb-4" style="color: #024744; font-weight: 700;">¿Quiénes somos?
+        </h2>
+        <p class="text-center" style="color: #024744; font-size: 1.05rem;">
                 En ConfíaSalud, somos una clínica comprometida con tu bienestar. Nuestro equipo de profesionales está dedicado a brindarte atención médica integral y de calidad, utilizando tecnología avanzada y un enfoque humano.
-            </p>
-        </div>
+        </p>
+      </div>
       <div class="container py-5">
         <h2 class="text-center mb-4" style="color: #024744; font-weight: 1000;">
           Nuestra Esencia
@@ -261,14 +261,14 @@
                   event.preventDefault(); // Evita el envío tradicional del formulario
             
                   // Número de WhatsApp de TU NEGOCIO (código de país + número sin espacios)
-                  const businessPhone = "51964650418"; // Cambia esto por tu número
+                  const businessPhone = "51923813488"; // Cambia esto por tu número
             
                   // Tomar datos del formulario
                   const userName = document.getElementById("userName").value.trim();
                   const userMessage = document.getElementById("userMessage").value.trim();
             
                   // Construir texto que se enviará
-                  const texto = `Hola, soy ${userName}, y escribo por que${userMessage}`;
+                  const texto = `Hola, soy ${userName}, y escribo por que ${userMessage}`;
             
                   // URL de WhatsApp con mensaje prellenado
                   const urlWhatsApp = `https://api.whatsapp.com/send?phone=${businessPhone}&text=${encodeURIComponent(texto)}`;
@@ -290,12 +290,12 @@
         
               <!-- 1. Contacto -->
               <div class="mapa-weas col-md-4 mb-4">
-                <h5 class="titulos-footer">Contáctanos</h5>
+                <h5 class="titulos-footer">Ubícanos</h5>
                 <p>
-                  Ubicación: <a href="https://maps.app.goo.gl/UzatxvEhkDiczQd96" class="avenida">Av. asd 123</a> Huancayo, Perú
+                  Ubicación: <a href="https://maps.app.goo.gl/6PNuraD5kBHwZab27" class="avenida">Av. Huancavelica 745, El Tambo, Huancayo, Peru</a>
                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.71469231958!2d-75.22186592493856!3d-12.06314088817495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x910e9640d17f31b3%3A0xa39c4d64ffbd66dc!2zQ2zDrW5pY2EgQ29uZsOtYVNhbHVk!5e0!3m2!1ses!2spe!4v1748238053229!5m2!1ses!2spe" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                   <br>
-                  Tel: <a href="tel:012345678" class="text-white">01‑2345678</a><br>
+                  Tel: <a href="tel:064-247087" class="text-white">064-247087 </a><br>
                   Email: <a href="mailto:info@confiasalud.com" class="text-white">info@confiasalud.com</a>
                 </p>
               </div>
