@@ -50,6 +50,20 @@
           </select>
         </div>
 
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email"
+                 id="email"
+                 name="email"
+                 class="form-control"
+                 value="{{ old('email', $especialista->email) }}">
+        </div>
+      
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" id="telefono" name="telefono" class="form-control" value="{{ old('telefono') }}" pattern="\d{9}" title="Ingresa un número telefónico válido">
+        </div>
+
         <button 
           type="submit" 
           class="btn" 

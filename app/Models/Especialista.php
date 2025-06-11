@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Especialista extends Model
 {
-    protected $fillable = ['area_id','nombre'];
+    protected $fillable = ['nombre','area_id','email','telefono',];
 
     public function area()
     {
@@ -14,8 +14,7 @@ class Especialista extends Model
     }
 
     public function horarios()
-{
-    return $this->hasMany(EspecialistaHorario::class);
-}
-
+    {
+        return $this->hasMany(EspecialistaHorario::class);
+    }
 }

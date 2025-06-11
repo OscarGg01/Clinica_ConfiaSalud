@@ -13,76 +13,62 @@
 </head>
 
 <body>
-    <div class="superior-bar">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <i class="bi bi-telephone-fill"></i> Central Telefónica: <a href="tel:064-247087" class="text-black">064-247087</a>
-                &nbsp;|&nbsp;
-                <i class="bi bi-whatsapp"></i> <a href="https://wa.me/51964650418" target="_blank" class="text-black">964 650 418</a>
-            </div>
-            <div>
-                <a href="https://www.facebook.com/clinicaconfiasalud" class="text-black me-3"><i class="bi bi-facebook fs-4"></i></a>
-                <a href="https://x.com/C_ConfiaSalud" class="text-black me-3"><i class="bi bi-twitter fs-4"></i></a>
-                <a href="https://www.instagram.com/clinicaconfiasalud?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-black me-3"><i class="bi bi-instagram fs-4"></i></a>
-            </div>
+  <div class="superior-bar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-telephone-fill"></i> Central Telefónica: <a href="tel:064-247087" class="text-black">064-247087</a>
+            &nbsp;|&nbsp;
+            <i class="bi bi-whatsapp"></i> <a href="https://wa.me/51964650418" target="_blank" class="text-black">964 650 418</a>
+        </div>
+        <div>
+            <a href="https://www.facebook.com/clinicaconfiasalud" class="text-black me-3"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="https://x.com/C_ConfiaSalud" class="text-black me-3"><i class="bi bi-twitter fs-4"></i></a>
+            <a href="https://www.instagram.com/clinicaconfiasalud?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-black me-3"><i class="bi bi-instagram fs-4"></i></a>
         </div>
     </div>
-    <nav class="navbar navbar-expand-lg navbar-light second-bar">
-        <div class="container">
-          {{-- 1. Logo + Nombre de la empresa --}}
-          <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-            <img class="logo" src="{{ asset('/images/logo-confia-salud.png') }}" alt="Logo Empresa" height="80" class="me-2">
-          </a>
-      
-          {{-- 2. Botón toggler para móvil --}}
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                  aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-      
-          {{-- 3. Menú colapsable --}}
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('prueba') }}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('especialidades') }}">Especialidades</a>
-                </li>
-                <li class="nav-item dropdown">
-                  <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    id="navbarCitas"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Citas
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarCitas">
-                    <li>
-                      <a class="dropdown-item" href="{{ route('citas.create') }}">
-                        Agendar cita
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="{{ route('citas.historial.form') }}">
-                        Historial de citas
-                      </a>
-                    </li>
-                  </ul>
-                </li> 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('staff') }}">Staff Médico</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a>
-                </li>
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-light second-bar">
+
+    <div class="container">
+      {{-- 1. Logo + Nombre de la empresa --}}
+      <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+        <img class="logo" src="{{ asset('/images/logo-confia-salud.png') }}" alt="Logo Empresa" height="80" class="me-2">
+      </a>
+
+      {{-- 2. Botón toggler para móvil --}}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      {{-- 3. Menú colapsable --}}
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('prueba') }}">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('especialidades') }}">Especialidades</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarCitas" role="button" data-bs-toggle="dropdown" aria-expanded="false">Citas</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarCitas">
+              <li>
+                <a class="dropdown-item" href="{{ route('citas.create') }}">Agendar cita</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ route('citas.historial.form') }}">Historial de citas</a>
+              </li>
             </ul>
-          </div>
-        </div>
-    </nav>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('staff') }}">Staff Médico</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
     <div class="imagen-descripcion d-flex align-items-center">
         <div class="container01 row w-100 align-items-stretch">
@@ -258,22 +244,14 @@
 
             <script>
               function enviarWhatsApp(event) {
-                  event.preventDefault(); // Evita el envío tradicional del formulario
-            
-                  // Número de WhatsApp de TU NEGOCIO (código de país + número sin espacios)
-                  const businessPhone = "51923813488"; // Cambia esto por tu número
+                  event.preventDefault();
+                  const businessPhone = "51923813488";
             
                   // Tomar datos del formulario
                   const userName = document.getElementById("userName").value.trim();
                   const userMessage = document.getElementById("userMessage").value.trim();
-            
-                  // Construir texto que se enviará
                   const texto = `Hola, soy ${userName}, y escribo por que ${userMessage}`;
-            
-                  // URL de WhatsApp con mensaje prellenado
                   const urlWhatsApp = `https://api.whatsapp.com/send?phone=${businessPhone}&text=${encodeURIComponent(texto)}`;
-            
-                  // Abrir en una nueva pestaña (o misma ventana)
                   window.open(urlWhatsApp, "_blank");
               }
             </script>

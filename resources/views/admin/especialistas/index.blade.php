@@ -19,6 +19,8 @@
         <th>ID</th>
         <th>Nombre</th>
         <th>Área</th>
+        <th>Email</th>
+        <th>Teléfono</th>
         <th width="180">Acciones</th>
       </tr>
     </thead>
