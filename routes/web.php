@@ -11,6 +11,8 @@ use App\Http\Controllers\EspecialistaController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Middleware\DoctorAuth;
 
 
 Route::get('/', function () {
@@ -80,8 +82,19 @@ Route::prefix('admin')
     Route::resource('horarios', HorarioController::class)
          ->except('show');
 
-Route::post('/contacto/enviar', [ContactoController::class, 'enviar'])->name('contacto.enviar');
-    
-    // Ruta para la política de privacidad
-Route::view('/politica-privacidad', 'politica_privacidad')->name('politica.privacidad');
+     Route::post('/contacto/enviar', [ContactoController::class, 'enviar'])->name('contacto.enviar');
+     
+     // Ruta para la política de privacidad
+     Route::view('/politica-privacidad', 'politica_privacidad')->name('politica.privacidad');
 });
+
+Route::get  ('/doctoresAdmin',      [DoctorController::class, 'loginForm'])->name('doctor.login');
+Route::post ('/doctoresAdmin/login',[DoctorController::class, 'login'])->name('doctor.login.submit');
+
+Route::middleware(DoctorAuth::class)->group(function(){
+     // Dashboard bienvenido
+     Route::get('/doctoresAdmin/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard');
+     Route::get('/doctoresAdmin/citas/{cita}', [DoctorController::class,'showCita'])->name('doctor.citas.show');
+     Route::get('/doctoresAdmin/citas/{cita}', [DoctorController::class,'showCita'])->name('doctor.citas.show');
+     Route::put('/doctoresAdmin/citas/{cita}/notas', [DoctorController::class,'updateNotas'])->name('doctor.citas.notas.update');
+ });

@@ -11,5 +11,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // …
         'basic.admin'  => \App\Http\Middleware\BasicAdmin::class,
+        'doctor.auth' => \App\Http\Middleware\DoctorAuth::class,
     ];
 }

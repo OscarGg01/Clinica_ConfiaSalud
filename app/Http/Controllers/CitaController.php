@@ -20,6 +20,7 @@ class CitaController extends Controller
             'especialista_id' => 'required|exists:especialistas,id',
             'fecha'           => 'required|date',
             'hora'            => 'required',
+            'notas'           => 'nullable|string|max:1000',
         ]);
 
         // Obtener paciente por DNI

@@ -34,11 +34,7 @@
 
         <div class="mb-3">
           <label for="area_id" class="form-label">Área *</label>
-          <select 
-            id="area_id" 
-            name="area_id" 
-            class="form-select" 
-            required>
+          <select id="area_id" name="area_id" class="form-select" required>
             <option value="">Seleccione...</option>
             @foreach($areas as $a)
               <option 

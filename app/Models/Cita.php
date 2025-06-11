@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Cita extends Model
 {
     protected $fillable = [
-        'dni', 'area_id', 'especialista_id', 'fecha', 'hora'
+        'dni', 'area_id', 'especialista_id', 'fecha', 'hora', 'notas', 'imagen'
     ];
 
     protected $casts = [
-        'fecha' => 'date',   // o 'datetime' si incluyes hora en la misma columna
+        'fecha' => 'date',
     ];
 
     // (Opcional) relaciones
     public function area() { return $this->belongsTo(Area::class); }
     public function especialista() { return $this->belongsTo(Especialista::class); }
-    public function paciente() {return $this->belongsTo(Paciente::class); }
+    public function paciente() {return $this->belongsTo(Paciente::class, 'dni', 'dni'); }
 }
