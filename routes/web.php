@@ -97,4 +97,8 @@ Route::middleware(DoctorAuth::class)->group(function(){
      Route::get('/doctoresAdmin/citas/{cita}', [DoctorController::class,'showCita'])->name('doctor.citas.show');
      Route::get('/doctoresAdmin/citas/{cita}', [DoctorController::class,'showCita'])->name('doctor.citas.show');
      Route::put('/doctoresAdmin/citas/{cita}/notas', [DoctorController::class,'updateNotas'])->name('doctor.citas.notas.update');
+     Route::put('/doctoresAdmin/citas/{cita}/detalles', [DoctorController::class,'updateDetalles'])->name('doctor.citas.detalles.update');
+     Route::get('/doctoresAdmin/historial', [DoctorController::class,'historialPaciente'])->name('doctor.historial');
+     Route::put('/doctoresAdmin/citas/{cita}/detalles', [DoctorController::class,'updateDetalles'])->name('doctor.citas.detalles.update');
+
  });

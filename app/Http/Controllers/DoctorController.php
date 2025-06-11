@@ -1,25 +1,32 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Especialista;
+use App\Models\Cita;
+use App\Models\CitaImagen;
+use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Cita;
 
 class DoctorController extends Controller
 {
-    // 1) Muestra el formulario de login
+    /**
+     * Muestra el formulario de login para doctores.
+     */
     public function loginForm()
     {
         return view('doctores.login');
     }
 
-    // 2) Procesa el login
+    /**
+     * Procesa el login de doctores usando email y teléfono como contraseña.
+     */
     public function login(Request $request)
     {
         $data = $request->validate([
             'email'    => 'required|email',
-            'password' => 'required|digits:9', // teléfono de 9 dígitos
+            'password' => 'required|digits:9',
         ]);
 
         $doc = Especialista::where('email', $data['email'])
@@ -30,72 +37,116 @@ class DoctorController extends Controller
             return back()->withErrors(['email' => 'Credenciales inválidas']);
         }
 
-        // Guardar en sesión
         session(['doctor_id' => $doc->id, 'doctor_nombre' => $doc->nombre]);
 
         return redirect()->route('doctor.dashboard');
     }
 
-    // 3) Muestra el dashboard con bienvenida
+    /**
+     * Muestra el dashboard con las próximas citas del especialista.
+     */
     public function dashboard()
     {
-        // Recuperar datos de sesión
         $doctorId = session('doctor_id');
         $nombre   = session('doctor_nombre');
-    
-        // Obtener las citas para ese especialista, con datos de paciente y área
-        $citas = \App\Models\Cita::with(['paciente','area'])
-                   ->where('especialista_id', $doctorId)
-                   ->whereDate('fecha', '>=', now())
-                   ->orderBy('fecha','asc')
-                   ->get();
-    
-        return view('doctores.dashboard', compact('nombre','citas'));
+
+        $citas = Cita::with(['paciente', 'area'])
+                     ->where('especialista_id', $doctorId)
+                     ->whereDate('fecha', '>=', now())
+                     ->orderBy('fecha', 'asc')
+                     ->get();
+
+        return view('doctores.dashboard', compact('nombre', 'citas'));
     }
 
-    public function showCita(\App\Models\Cita $cita)
+    /**
+     * Muestra los detalles de una cita (solo para el especialista propietario).
+     */
+    public function showCita(Cita $cita)
     {
-        // Asegurar que el doctor vea solo sus propias citas
         if (session('doctor_id') !== $cita->especialista_id) {
             abort(403, 'No autorizado.');
         }
-        // Carga también el paciente
-        $cita->load('paciente');
+
+        $cita->load(['paciente', 'imagenes']);
+
         return view('doctores.citas.show', compact('cita'));
     }
 
-    public function updateNotas(Request $request, Cita $cita)
+    /**
+     * Actualiza notas, sube nuevas imágenes y elimina las marcadas.
+     */
+    public function updateDetalles(Request $request, Cita $cita)
     {
-        // Verificación de propietario
         if (session('doctor_id') !== $cita->especialista_id) {
             abort(403, 'No autorizado.');
         }
-    
-        // Validar notas y archivo
+
         $data = $request->validate([
-            'notas'  => 'nullable|string|max:2000',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'notas'              => 'nullable|string|max:2000',
+            'nuevasImagenes.*'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'eliminar'           => 'nullable|array',
+            'eliminar.*'         => 'integer|exists:cita_imagenes,id',
         ]);
-    
-        // Guardar notas
+
+        // 1) Actualizar notas
         $cita->notas = $data['notas'] ?? null;
-    
-        // Si hay imagen, procesarla
-        if ($request->hasFile('imagen')) {
-            // Elimina la anterior si existe
-            if ($cita->imagen && Storage::disk('public')->exists($cita->imagen)) {
-                Storage::disk('public')->delete($cita->imagen);
+        $cita->save();
+
+        // 2) Eliminar imágenes marcadas
+        if (!empty($data['eliminar'])) {
+            $imgs = CitaImagen::whereIn('id', $data['eliminar'])->get();
+            foreach ($imgs as $img) {
+                Storage::disk('public')->delete($img->path);
+                $img->delete();
             }
-            // Guarda la nueva y almacena la ruta
-            $path = $request->file('imagen')->store('citas', 'public');
-            $cita->imagen = $path;
+        }
+
+        // 3) Subir nuevas imágenes
+        if ($request->hasFile('nuevasImagenes')) {
+            foreach ($request->file('nuevasImagenes') as $file) {
+                $path = $file->store('citas', 'public');
+                CitaImagen::create([
+                    'cita_id' => $cita->id,
+                    'path'    => $path,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Detalles actualizados.');
+    }
+
+    public function historialPaciente(Request $request)
+    {
+        $request->validate(['dni' => 'required|digits:8']);
+    
+        $paciente = Paciente::where('dni', $request->dni)->firstOrFail();
+    
+        // Permitimos order_by: fecha, especialista, area
+        $validSort = ['fecha','especialista','area'];
+        $sort = in_array($request->order_by, $validSort)
+              ? $request->order_by
+              : 'fecha';
+    
+        $query = Cita::with(['area','especialista','imagenes'])
+                     ->where('dni', $paciente->dni);
+    
+        // Aplicar orden
+        if ($sort === 'especialista') {
+            $query->join('especialistas','citas.especialista_id','=','especialistas.id')
+                  ->orderBy('especialistas.nombre');
+        } elseif ($sort === 'area') {
+            $query->join('areas','citas.area_id','=','areas.id')
+                  ->orderBy('areas.nombre');
+        } else {
+            $query->orderBy('fecha','desc');
         }
     
-        // Persistir en BD
-        $cita->save();
+        // Al usar join, seleccionamos citas.*
+        $citas = $query->select('citas.*')->get();
     
-        return back()->with('success', 'Notas e imagen actualizadas.');
+        return view('doctores.historial', compact('paciente','citas','sort'));
     }
     
-    
+
 }
