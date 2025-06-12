@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ClinicaCitas</title>
-  
+  <title>ClinicaCitas - Historial de citas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" rel="stylesheet">
@@ -15,93 +14,95 @@
 <body>
   <div class="superior-bar">
     <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <i class="bi bi-telephone-fill"></i> Central Telefónica: <a href="tel:064-247087" class="text-black">064-247087</a>
-            &nbsp;|&nbsp;
-            <i class="bi bi-whatsapp"></i> <a href="https://wa.me/51964650418" target="_blank" class="text-black">964 650 418</a>
-        </div>
-        <div>
-            <a href="https://www.facebook.com/clinicaconfiasalud" class="text-black me-3"><i class="bi bi-facebook fs-4"></i></a>
-            <a href="https://x.com/C_ConfiaSalud" class="text-black me-3"><i class="bi bi-twitter fs-4"></i></a>
-            <a href="https://www.instagram.com/clinicaconfiasalud?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-black me-3"><i class="bi bi-instagram fs-4"></i></a>
-        </div>
+      <div>
+        <i class="bi bi-telephone-fill"></i> Central Telefónica: 
+        <a href="tel:064-247087" class="text-black">064-247087</a>
+        &nbsp;|&nbsp;
+        <i class="bi bi-whatsapp"></i> 
+        <a href="https://wa.me/51964650418" target="_blank" class="text-black">964 650 418</a>
+      </div>
+      <div>
+        <a href="https://www.facebook.com/clinicaconfiasalud" class="text-black me-3">
+          <i class="bi bi-facebook fs-4"></i>
+        </a>
+        <a href="https://x.com/C_ConfiaSalud" class="text-black me-3">
+          <i class="bi bi-twitter fs-4"></i>
+        </a>
+        <a href="https://www.instagram.com/clinicaconfiasalud?igsh=ZDNlZDc0MzIxNw==" class="text-black me-3">
+          <i class="bi bi-instagram fs-4"></i>
+        </a>
+      </div>
     </div>
   </div>
+
   <nav class="navbar navbar-expand-lg navbar-light second-bar">
-
     <div class="container">
-      {{-- 1. Logo + Nombre de la empresa --}}
       <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-        <img class="logo" src="{{ asset('/images/logo-confia-salud.png') }}" alt="Logo Empresa" height="80" class="me-2">
+        <img src="{{ asset('/images/logo-confia-salud.png') }}" alt="Logo" height="80" class="me-2">
       </a>
-
-      {{-- 2. Botón toggler para móvil --}}
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-      {{-- 3. Menú colapsable --}}
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('prueba') }}">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('especialidades') }}">Especialidades</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('prueba') }}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('especialidades') }}">Especialidades</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarCitas" role="button" data-bs-toggle="dropdown" aria-expanded="false">Citas</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarCitas" data-bs-toggle="dropdown">
+              Citas
+            </a>
             <ul class="dropdown-menu" aria-labelledby="navbarCitas">
-              <li>
-                <a class="dropdown-item" href="{{ route('citas.create') }}">Agendar cita</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{{ route('citas.historial.form') }}">Historial de citas</a>
-              </li>
+              <li><a class="dropdown-item" href="{{ route('citas.create') }}">Agendar cita</a></li>
+              <li><a class="dropdown-item" href="{{ route('citas.historial.form') }}">Historial de citas</a></li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('staff') }}">Staff Médico</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('staff') }}">Staff Médico</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-    <div class="relleno_lista">
-        <div class="container py-5">
-            <h2 class="mb-4">Tus próximas citas</h2>
-          
-            @if($citas->isEmpty())
-              <div class="alert alert-info">No tienes citas pendientes.</div>
-            @else
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Especialista</th><th>Área</th><th>Fecha</th><th>Hora</th><th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($citas as $c)
-                    <tr>
-                      <td>{{ $c->especialista->nombre }}</td>
-                      <td>{{ $c->area->nombre }}</td>
-                      <td>{{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}</td>
-                      <td>{{ \Carbon\Carbon::parse($c->hora)->format('H:i') }}</td>
-                      <td>
-                        <a href="{{ route('citas.edit',$c) }}" class="btn btn-sm btn-warning">
-                          Reprogramar
-                        </a>
-                      </td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            @endif
-        </div>
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Tu historial de citas</h2>
+      <a href="{{ route('citas.historial.form') }}" 
+         class="btn btn-outline-secondary">
+        Cerrar sesión
+      </a>
     </div>
+
+    @if($citas->isEmpty())
+      <div class="alert alert-info">No tienes citas pendientes.</div>
+    @else
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Especialista</th>
+            <th>Área</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($citas as $c)
+            <tr>
+              <td>{{ $c->especialista->nombre }}</td>
+              <td>{{ $c->area->nombre }}</td>
+              <td>{{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}</td>
+              <td>{{ \Carbon\Carbon::parse($c->hora)->format('H:i') }}</td>
+              <td>
+                <a href="{{ route('citas.edit', $c) }}" class="btn btn-sm btn-warning">
+                  Reprogramar
+                </a>
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    @endif
+  </div>
 
     <footer class="final" class="bg-dark text-white pt-5">
       <div class="container">

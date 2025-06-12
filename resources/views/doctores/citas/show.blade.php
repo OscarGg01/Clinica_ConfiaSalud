@@ -29,7 +29,7 @@
 
   <nav class="navbar navbar-light">
     <div class="container">
-      <span class="navbar-brand mb-0 h1">Clínica ConfíaSalud</span>
+      <a href="{{ route('doctor.dashboard') }}" class="navbar-brand">Clínica ConfíaSalud</a>
     </div>
   </nav>
 

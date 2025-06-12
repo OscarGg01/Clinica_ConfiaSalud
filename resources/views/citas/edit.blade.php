@@ -76,144 +76,170 @@
 
   <div class="relleno_edit">
     <div class="container py-5">
-        <h2 class="mb-4">Reprogramar Cita</h2>
-      
-        {{-- Mostrar posibles errores --}}
-        @if ($errors->any())
-          <div class="alert alert-danger">
-            <ul class="mb-0">
-              @foreach ($errors->all() as $err)
-                <li>{{ $err }}</li>
-              @endforeach
-            </ul>
-          </div>
-        @endif
-      
-        <form id="form-cita-edit" method="POST" action="{{ route('citas.update', $cita) }}">
-          @csrf
-          @method('PUT')
-      
-          {{-- DNI (solo lectura) --}}
-          <div class="mb-3">
-            <label class="form-label">DNI</label>
-            <input type="text" class="form-control" value="{{ $cita->dni }}" readonly>
-            <input type="hidden" name="dni" value="{{ $cita->dni }}">
-          </div>
-      
-          {{-- Área --}}
-          <div class="mb-3">
-            <label class="form-label">Área *</label>
-            <select name="area_id" id="area_id" class="form-select" required>
-              <option value="">Seleccione...</option>
-              @foreach($areas as $a)
-                <option 
-                  value="{{ $a->id }}" 
-                  @if(old('area_id', $cita->area_id) == $a->id) selected @endif
-                >{{ $a->nombre }}</option>
-              @endforeach
-            </select>
-          </div>
-      
-          {{-- Especialista --}}
-          <div class="mb-3">
-            <label class="form-label">Especialista *</label>
-            <select name="especialista_id" id="especialista_id" class="form-select" required>
-              <option value="">Primero seleccione área</option>
-            </select>
-          </div>
-      
-          {{-- Fecha --}}
-          <div class="mb-3">
-            <label class="form-label">Fecha *</label>
-            <input 
-              type="date" 
-              name="fecha" 
-              id="fecha" 
-              class="form-control" 
-              required 
-              value="{{ old('fecha', $cita->fecha->format('Y-m-d')) }}"
-            >
-          </div>
-      
-          {{-- Hora --}}
-          <div class="mb-3">
-            <label class="form-label">Hora Disponible *</label>
-            <select name="hora" id="hora" class="form-select" required>
-              <option value="">Elige fecha y especialista</option>
-            </select>
-          </div>
-      
-          <button class="btn btn-primary">
-            <i class="bi bi-save"></i> Guardar cambios
-          </button>
-          <a href="{{ route('citas.historial.form') }}" class="btn btn-secondary ms-2">
-            Cancelar
-          </a>
-        </form>
-      </div>
+      <h2 class="mb-4">Reprogramar Cita</h2>
+    
+      {{-- Mensaje de éxito --}}
+      @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      @endif
+    
+      {{-- Mostrar posibles errores --}}
+      @if ($errors->any())
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @foreach ($errors->all() as $err)
+              <li>{{ $err }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+    
+      <form id="form-cita-edit" method="POST" action="{{ route('citas.update', $cita) }}">
+        @csrf
+        @method('PUT')
+    
+        {{-- DNI (solo lectura) --}}
+        <div class="mb-3">
+          <label class="form-label">DNI</label>
+          <input type="text" class="form-control" value="{{ $cita->dni }}" readonly>
+          <input type="hidden" name="dni" value="{{ $cita->dni }}">
+        </div>
+    
+        {{-- Área --}}
+        <div class="mb-3">
+          <label class="form-label">Área *</label>
+          <select name="area_id" id="area_id" class="form-select" required>
+            <option value="">Seleccione...</option>
+            @foreach($areas as $a)
+              <option
+                value="{{ $a->id }}"
+                @if(old('area_id', $cita->area_id) == $a->id) selected @endif
+              >{{ $a->nombre }}</option>
+            @endforeach
+          </select>
+        </div>
+    
+        {{-- Especialista --}}
+        <div class="mb-3">
+          <label class="form-label">Especialista *</label>
+          <select name="especialista_id" id="especialista_id" class="form-select" required>
+            <option value="">Primero seleccione área</option>
+          </select>
+        </div>
+    
+        {{-- Fecha --}}
+        <div class="mb-3">
+          <label class="form-label">Fecha *</label>
+          <input
+            type="date"
+            name="fecha"
+            id="fecha"
+            class="form-control"
+            required
+            value="{{ old('fecha', $cita->fecha->format('Y-m-d')) }}"
+          >
+        </div>
+    
+        {{-- Hora --}}
+        <div class="mb-3">
+          <label class="form-label">Hora Disponible *</label>
+          <select name="hora" id="hora" class="form-select" required>
+            <option value="">Elige fecha y especialista</option>
+          </select>
+        </div>
+    
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-save"></i> Guardar cambios
+        </button>
+        <button type="button" class="btn btn-secondary ms-2" onclick="history.back()">
+          ← Volver
+        </button>
+      </form>
+    </div>
+    
+    
 
         {{-- Reutiliza tu citas.js pero adaptado para precarga --}}
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
+          // Configura CSRF para Axios
           axios.defaults.headers.common['X-CSRF-TOKEN'] =
             document.querySelector('meta[name="csrf-token"]').content;
-      
-          // Función para generar horas fijas
-          function generarSlots() {
-            const selectHora = document.getElementById('hora');
-            const esp       = document.getElementById('especialista_id').value;
-            const fecha     = document.getElementById('fecha').value;
-            if (!esp || !fecha) {
-              selectHora.innerHTML = '<option value="">Elige fecha y especialista</option>';
-              return;
-            }
-            const slots = [];
-            [[8,14],[16,20]].forEach(([s,e]) => {
-              for (let h=s; h<e; h++) {
-                slots.push(`${String(h).padStart(2,'0')}:00`);
-                slots.push(`${String(h).padStart(2,'0')}:30`);
-              }
-            });
-            const opciones = slots
-              .map(s => `<option value="${s}">${s}</option>`)
-              .join('');
-            selectHora.innerHTML = opciones;
-          }
-      
-          // Al cambiar área cargamos especialistas
-          document.getElementById('area_id').addEventListener('change', function(){
+        
+          // Carga especialistas al cambiar área
+          document.getElementById('area_id').addEventListener('change', function() {
             const areaId = this.value;
-            const select = document.getElementById('especialista_id');
+            const selectEsp = document.getElementById('especialista_id');
             if (!areaId) {
-              select.innerHTML = '<option value="">Primero seleccione área</option>';
+              selectEsp.innerHTML = '<option value="">Primero seleccione área</option>';
               return;
             }
-            select.innerHTML = '<option>Cargando...</option>';
+            selectEsp.innerHTML = '<option>Cargando...</option>';
+        
             axios.post('/citas/especialistas', { area_id: areaId })
               .then(({ data }) => {
-                select.innerHTML = '<option value="">Seleccione...</option>';
+                selectEsp.innerHTML = '<option value="">Seleccione...</option>';
                 data.forEach(e => {
-                  select.insertAdjacentHTML('beforeend',
+                  selectEsp.insertAdjacentHTML('beforeend',
                     `<option value="${e.id}">${e.nombre}</option>`
                   );
                 });
-                // Preseleccionar el especialista actual
-                select.value = "{{ old('especialista_id', $cita->especialista_id) }}";
-                // Generar slots y preseleccionar hora
-                generarSlots();
-                document.getElementById('hora').value = "{{ old('hora', $cita->hora) }}";
+                // Preseleccionar el especialista de la cita
+                selectEsp.value = "{{ old('especialista_id', $cita->especialista_id) }}";
+                // Cargar horarios tras precargar especialista
+                cargarHorarios();
+              })
+              .catch(() => {
+                selectEsp.innerHTML = '<option value="">Error al cargar</option>';
               });
           });
-      
-          // Al cambiar fecha o especialista generamos slots
-          document.getElementById('especialista_id').addEventListener('change', generarSlots);
-          document.getElementById('fecha').addEventListener('change', generarSlots);
-      
-          // Al cargar la página disparamos el change de área para precarga
+        
+          // Función para cargar horarios reales desde BD
+          function cargarHorarios() {
+            const espId = document.getElementById('especialista_id').value;
+            const fecha = document.getElementById('fecha').value;
+            const selectHora = document.getElementById('hora');
+        
+            if (!espId || !fecha) {
+              selectHora.innerHTML = '<option value="">Elige fecha y especialista</option>';
+              return;
+            }
+        
+            selectHora.innerHTML = '<option>Cargando...</option>';
+        
+            axios.post('/citas/horarios', {
+              especialista_id: espId,
+              fecha: fecha
+            })
+            .then(({ data }) => {
+              if (data.length) {
+                selectHora.innerHTML = data
+                  .map(h => `<option value="${h}">${h}</option>`)
+                  .join('');
+                // Preseleccionar la hora de la cita
+                selectHora.value = "{{ old('hora', $cita->hora) }}";
+              } else {
+                selectHora.innerHTML = '<option value="">No hay horarios</option>';
+              }
+            })
+            .catch(() => {
+              selectHora.innerHTML = '<option value="">Error al cargar horarios</option>';
+            });
+          }
+        
+          // Asociar recarga de horarios a cambios
+          document.getElementById('especialista_id').addEventListener('change', cargarHorarios);
+          document.getElementById('fecha').addEventListener('change', cargarHorarios);
+        
+          // Al cargar la página, dispara el change de área para precargar todo
           window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('area_id').dispatchEvent(new Event('change'));
           });
         </script>
+        
   </div>
 
   <footer class="final" class="bg-dark text-white pt-5">

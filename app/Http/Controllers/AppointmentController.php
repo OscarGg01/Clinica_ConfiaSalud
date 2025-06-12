@@ -123,23 +123,26 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, Cita $cita)
     {
+        // Verifica que el DNI en sesión coincida
         if (session('paciente_dni') !== $cita->dni) {
             abort(403, 'No autorizado.');
         }
-
+    
+        // Valida datos
         $data = $request->validate([
             'area_id'         => 'required|exists:areas,id',
             'especialista_id' => 'required|exists:especialistas,id',
             'fecha'           => 'required|date|after_or_equal:today',
             'hora'            => 'required',
         ]);
-
+    
+        // Actualiza la cita
         $cita->update($data);
-
-        return redirect()
-            ->route('citas.historial.form')
-            ->with('success', 'Cita reprogramada correctamente.');
+    
+        // Regresa al listado (historial_list.blade.php), con mensaje de éxito
+        return back()->with('success', 'Cita reprogramada correctamente.');
     }
+    
 
     /**
      * Almacena o actualiza solo los datos del paciente.

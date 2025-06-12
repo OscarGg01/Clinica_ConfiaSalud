@@ -8,6 +8,11 @@ use App\Models\CitaImagen;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AntecedenteFamiliar;
+use Carbon\Carbon;
+use App\Models\Alergia;
+use App\Models\Cirugia;
+use App\Models\Hospitalizacion;
 
 class DoctorController extends Controller
 {
@@ -50,11 +55,10 @@ class DoctorController extends Controller
         $doctorId = session('doctor_id');
         $nombre   = session('doctor_nombre');
 
-        $citas = Cita::with(['paciente', 'area'])
-                     ->where('especialista_id', $doctorId)
-                     ->whereDate('fecha', '>=', now())
-                     ->orderBy('fecha', 'asc')
-                     ->get();
+        $citas = Cita::with(['paciente','area'])->where('especialista_id', session('doctor_id'))
+        ->whereDate('fecha', '>=', Carbon::today())
+        ->orderBy('fecha','asc')
+        ->get();
 
         return view('doctores.dashboard', compact('nombre', 'citas'));
     }
@@ -148,5 +152,89 @@ class DoctorController extends Controller
         return view('doctores.historial', compact('paciente','citas','sort'));
     }
     
+    public function updateAntecedentes(Request $request, Paciente $paciente)
+    {
+        // Verificar doctor logueado sobre sus pacientes si aplica
+        $request->validate([
+            'texto' => 'nullable|string|max:5000',
+        ]);
+
+        // Crear o actualizar el registro
+        AntecedenteFamiliar::updateOrCreate(
+            ['paciente_id' => $paciente->id],
+            ['texto'       => $request->input('texto')]
+        );
+
+        return back()->with('success', 'Antecedentes familiares guardados.');
+    }
+
+    public function logout()
+    {
+        // Eliminar datos de sesión
+        session()->forget(['doctor_id','doctor_nombre']);
+
+        // Redirigir al formulario de login
+        return redirect()->route('doctor.login')->with('success', 'Has cerrado sesión correctamente.');
+    }
+
+    public function updateAlergias(Request $request, Paciente $paciente)
+    {
+
+        $data = $request->validate([
+            'descripcion' => 'nullable|string|max:2000',
+        ]);
+
+        Alergia::updateOrCreate(
+            ['paciente_id' => $paciente->id],
+            ['descripcion' => $data['descripcion']]
+        );
+
+        return back()->with('success', 'Alergias actualizadas.');
+    }
+
+    public function storeCirugia(Request $request, Paciente $paciente)
+    {
+        $request->validate([
+            'fecha'       => 'required|date',
+            'descripcion' => 'required|string|max:2000',
+        ]);
+
+        Cirugia::create([
+            'paciente_id' => $paciente->id,
+            'fecha'       => $request->fecha,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return back()->with('success','Cirugía registrada.');
+    }
+
+    public function destroyCirugia(Cirugia $cirugia)
+    {
+        // opcional: verificar que sea del paciente correcto / doctor autorizado
+        $cirugia->delete();
+        return back()->with('success','Cirugía eliminada.');
+    }
+
+    public function storeHospitalizacion(Request $request, Paciente $paciente)
+    {
+        $request->validate([
+            'fecha'       => 'required|date',
+            'descripcion' => 'required|string|max:2000',
+        ]);
+
+        Hospitalizacion::create([
+            'paciente_id' => $paciente->id,
+            'fecha'       => $request->fecha,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return back()->with('success','Hospitalización registrada.');
+    }
+
+    public function destroyHospitalizacion(Hospitalizacion $hospitalizacion)
+    {
+        $hospitalizacion->delete();
+        return back()->with('success','Hospitalización eliminada.');
+    }
 
 }
