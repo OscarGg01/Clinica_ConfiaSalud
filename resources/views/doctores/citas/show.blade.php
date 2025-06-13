@@ -64,11 +64,17 @@
     @endif
 
     {{-- Formulario de notas e imágenes --}}
-    <form method="POST"
-          action="{{ route('doctor.citas.detalles.update', $cita) }}"
-          enctype="multipart/form-data">
+    <form method="POST" action="{{ route('doctor.citas.detalles.update', $cita) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
+
+      {{-- Diagnóstico (textarea más pequeño) --}}
+      <div class="mb-3">
+        <label for="diagnostico" class="form-label">Diagnóstico</label>
+        <textarea id="diagnostico" name="diagnostico" class="form-control" rows="2">
+          {{ old('diagnostico', $cita->diagnostico) }}
+        </textarea>
+      </div>
 
       {{-- Notas --}}
       <div class="mb-3">

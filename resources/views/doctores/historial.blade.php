@@ -161,6 +161,7 @@
           </button>
         </div>
       </form>
+    
       @if($citas->isEmpty())
         <div class="alert alert-info">Este paciente no tiene citas registradas.</div>
       @else
@@ -172,7 +173,8 @@
               <strong>{{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}</strong> a las {{ $c->hora }}
             </div>
             <div class="card-body">
-              <p><strong>Notas:</strong> {{ $c->notas ?? '—' }}</p>
+              <p><strong>Diagnóstico:</strong> {{ $c->diagnostico ?? '—' }}</p>
+              <p><strong>Notas/Resultados:</strong> {{ $c->notas ?? '—' }}</p>
               <p><strong>Imágenes:</strong></p>
               <div class="d-flex flex-wrap gap-2">
                 @forelse($c->imagenes as $img)
@@ -187,6 +189,7 @@
         @endforeach
       @endif
     </div>
+    
 
     <a href="{{ route('doctor.dashboard') }}" class="btn btn-secondary">← Volver al Dashboard</a>
   </div>

@@ -82,21 +82,25 @@ class DoctorController extends Controller
      */
     public function updateDetalles(Request $request, Cita $cita)
     {
+        // Autorización
         if (session('doctor_id') !== $cita->especialista_id) {
             abort(403, 'No autorizado.');
         }
-
+    
+        // Validación
         $data = $request->validate([
+            'diagnostico'        => 'nullable|string|max:500',
             'notas'              => 'nullable|string|max:2000',
             'nuevasImagenes.*'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'eliminar'           => 'nullable|array',
             'eliminar.*'         => 'integer|exists:cita_imagenes,id',
         ]);
-
-        // 1) Actualizar notas
-        $cita->notas = $data['notas'] ?? null;
+    
+        // 1) Actualizar diagnóstico y notas
+        $cita->diagnostico = $data['diagnostico'] ?? null;
+        $cita->notas       = $data['notas']       ?? null;
         $cita->save();
-
+    
         // 2) Eliminar imágenes marcadas
         if (!empty($data['eliminar'])) {
             $imgs = CitaImagen::whereIn('id', $data['eliminar'])->get();
@@ -105,7 +109,7 @@ class DoctorController extends Controller
                 $img->delete();
             }
         }
-
+    
         // 3) Subir nuevas imágenes
         if ($request->hasFile('nuevasImagenes')) {
             foreach ($request->file('nuevasImagenes') as $file) {
@@ -116,9 +120,11 @@ class DoctorController extends Controller
                 ]);
             }
         }
-
+    
+        // 4) Retornar con éxito
         return back()->with('success', 'Detalles actualizados.');
     }
+    
 
     public function historialPaciente(Request $request)
     {

@@ -77,32 +77,37 @@ class AppointmentController extends Controller
             'dni'     => 'required|digits:8',
             'celular' => 'required'
         ]);
-
+    
         $dni     = $request->dni;
         $celular = $request->celular;
-
-        // Verificamos combinación DNI + teléfono
+    
         $pac = Paciente::where('dni', $dni)
                        ->where('telefono', $celular)
                        ->first();
-
+    
         if (! $pac) {
-            return redirect()
-                ->back()
-                ->with('error', 'DNI o celular incorrectos.');
+            return back()->with('error', 'DNI o celular incorrectos.');
         }
-
-        // Guardamos en sesión para autorizar edición
+    
         session(['paciente_dni' => $dni]);
-
-        // Obtenemos citas futuras del paciente
-        $citas = Cita::where('dni', $dni)
-                     ->whereDate('fecha', '>=', now())
-                     ->with(['area','especialista'])
-                     ->get();
-
-        return view('citas.historial_list', compact('citas'));
+    
+        // Próximas citas (hoy en adelante)
+        $citasProx = Cita::where('dni', $dni)
+                         ->whereDate('fecha', '>=', now())
+                         ->with(['area','especialista'])
+                         ->orderBy('fecha','asc')
+                         ->get();
+    
+        // Citas pasadas (antes de hoy)
+        $citasPas = Cita::where('dni', $dni)
+                        ->whereDate('fecha', '<', now())
+                        ->with(['area','especialista'])
+                        ->orderBy('fecha','desc')
+                        ->get();
+    
+        return view('citas.historial_list', compact('pac','citasProx','citasPas'));
     }
+    
 
     /**
      * Muestra el formulario para reprogramar una cita.
@@ -194,4 +199,14 @@ class AppointmentController extends Controller
 
         return response()->json($horas);
     }
+
+    public function logout()
+    {
+        // Elimina la clave de sesión que identifica al paciente
+        session()->forget('paciente_dni');
+
+        // Redirige al formulario de ingreso de DNI+celular
+        return redirect()->route('citas.historial.form');
+    }
+
 }

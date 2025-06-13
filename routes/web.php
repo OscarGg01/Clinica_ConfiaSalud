@@ -31,6 +31,8 @@ Route::get('/citas/historial', [AppointmentController::class, 'historialForm'])-
 // Verificar credenciales y mostrar citas
 Route::post('/citas/historial', [AppointmentController::class, 'historialVerificar'])->name('citas.historial.verificar');
 
+Route::get('/citas/logout', [AppointmentController::class, 'logout'])->name('citas.logout');
+
 // Editar cita (protegido)
 Route::get('/citas/{cita}/edit', [AppointmentController::class, 'edit'])->name('citas.edit');
      

@@ -63,46 +63,106 @@
     </div>
   </nav>
 
-  <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0">Tu historial de citas</h2>
-      <a href="{{ route('citas.historial.form') }}" 
-         class="btn btn-outline-secondary">
+  <div class="container-fluid py-5" style="background: #f7faf3;">
+    <div class="container">
+      <h2 class="text-center mb-4" style="color: #024744; font-weight: 1000;">
+        Tu historial de citas
+      </h2>
+    
+      <div class="row">
+        {{-- Citas pasadas a la izquierda --}}
+        <div class="col-md-6">
+          <h4 class="mb-3">Citas pasadas</h4>
+    
+          @if($citasPas->isEmpty())
+            <div class="alert alert-secondary">No tienes citas pasadas.</div>
+          @else
+            @foreach($citasPas as $c)
+              @php $modalId = 'detalleCita'.$c->id; @endphp
+    
+              <div class="card mb-3">
+                <div class="card-header" style="background: #5353ac; color: #ffffff;">
+                  {{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }} — {{ $c->hora }}
+                </div>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-1"><strong>Especialista:</strong> {{ $c->especialista->nombre }}</p>
+                    <p class="mb-0"><strong>Área:</strong> {{ $c->area->nombre }}</p>
+                  </div>
+                  <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                    Ver detalles
+                  </button>
+                </div>
+              </div>
+    
+              <!-- Modal de detalles -->
+              <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Detalles de la cita</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p><strong>Diagnóstico:</strong> {{ $c->diagnostico ?? '—' }}</p>
+                      <p><strong>Notas:</strong> {{ $c->notas ?? '—' }}</p>
+                      <p><strong>Imágenes:</strong></p>
+                      <div class="d-flex flex-wrap gap-2">
+                        @forelse($c->imagenes as $img)
+                          <img src="{{ asset('storage/'.$img->path) }}"
+                              style="width:100px; height:100px; object-fit:cover; border-radius:.5rem;">
+                        @empty
+                          <span class="text-muted">Sin imágenes</span>
+                        @endforelse
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-outline-primary" disabled>
+                        Descargar PDF
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cerrar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          @endif
+        </div>
+    
+        {{-- Próximas citas a la derecha --}}
+        <div class="col-md-6">
+          <h4 class="mb-3">Próximas citas</h4>
+          @if($citasProx->isEmpty())
+            <div class="alert alert-info">No tienes próximas citas.</div>
+          @else
+            @foreach($citasProx as $c)
+              <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                  {{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }} — {{ $c->hora }}
+                </div>
+                <div class="card-body">
+                  <p><strong>Especialista:</strong> {{ $c->especialista->nombre }}</p>
+                  <p><strong>Área:</strong> {{ $c->area->nombre }}</p>
+                  <a href="{{ route('citas.edit', $c) }}" class="btn btn-sm btn-warning">
+                    Reprogramar
+                  </a>
+                </div>
+              </div>
+            @endforeach
+          @endif
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-center my-4">
+      <a href="{{ route('citas.logout') }}" class="btn btn-danger">
         Cerrar sesión
       </a>
     </div>
-
-    @if($citas->isEmpty())
-      <div class="alert alert-info">No tienes citas pendientes.</div>
-    @else
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Especialista</th>
-            <th>Área</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($citas as $c)
-            <tr>
-              <td>{{ $c->especialista->nombre }}</td>
-              <td>{{ $c->area->nombre }}</td>
-              <td>{{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}</td>
-              <td>{{ \Carbon\Carbon::parse($c->hora)->format('H:i') }}</td>
-              <td>
-                <a href="{{ route('citas.edit', $c) }}" class="btn btn-sm btn-warning">
-                  Reprogramar
-                </a>
-              </td>
-            </tr>
-          @endforeach
-        </tbody>
-      </table>
-    @endif
   </div>
+  
 
     <footer class="final" class="bg-dark text-white pt-5">
       <div class="container">
